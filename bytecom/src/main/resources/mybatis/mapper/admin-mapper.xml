@@ -1,0 +1,143 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.bytecom.admin.dao.AdminDao">
+	
+	<!-- 그룹계정 유저등록 -->
+	<insert id="registerGroupUser" parameterType="java.util.Map">	
+		INSERT IGNORE INTO
+		TB_USER (USER_ID, USER_PW, USER_NAME, USER_MAIL, USER_MAIL_AUTHCODE, USER_PHONE, USER_COMPANY,
+				 GROUP_CODE, GROUP_NAME, AUTH_CODE, STATE_CODE, INS_USER, INS_DATE, UPD_USER, UPD_DATE)
+		VALUES (#{userId}, #{userPw}, #{userName}, #{userMail}, null, #{userPhone}, #{groupName},
+				#{groupCode}, #{groupName}, 'GROUP', #{stateCode}, null, NOW(), null, NOW())		
+	</insert>
+	
+	<!-- 그룹계정 Rtk등록 -->
+	<insert id="registerGroupRtk" parameterType="java.util.Map">
+		INSERT IGNORE INTO
+		TB_PLAN (GROUP_NAME, PLAN_ID, RTK_ID, RTK_PW, INS_USER, INS_DATE, UPD_USER, UPD_DATE)
+		VALUES (#{groupName}, #{planId}, #{rtkId}, #{rtkPw}, null, NOW(), null, NOW() )
+	</insert>
+	
+	<!-- 그룹코드 중복조회 -->
+	<select id="groupCodeCheck" parameterType="String" resultType="java.lang.Integer">
+		select count(*) from TB_USER where GROUP_CODE = #{groupCode}
+	</select>
+	
+	
+	
+	<!-- 그룹목록 가져오기 -->
+	<select id="getGroupList"  parameterType="java.util.Map" resultType="kr.co.bytecom.admin.dto.AdminListDto">
+		select USER.GROUP_NAME,USER.USER_NAME,USER.USER_PHONE,PLAN.RTK_ID
+		from TB_USER USER left join TB_PLAN PLAN
+		on USER.GROUP_NAME = PLAN.GROUP_NAME
+		WHERE USER.AUTH_CODE = 'GROUP'
+		order by USER.GROUP_NAME
+		limit #{start}, #{end}
+	</select>
+	
+	<!-- 유저목록 가져오기 -->
+	<select id="getUserList"  parameterType="java.util.Map" resultType="kr.co.bytecom.admin.dto.AdminListDto">
+		select GROUP_NAME, USER_NAME, USER_PHONE
+		from TB_USER		
+		where AUTH_CODE = 'USER' and GROUP_NAME = #{groupName}
+		order by USER_NAME
+		limit #{start}, #{end}
+	</select>
+	
+	<!-- 그룹네임,기관코드 리스트 -->
+	<select id="getGroupNameList" resultType="java.util.Map">
+		select GROUP_NAME, GROUP_CODE
+		from TB_GROUP
+		order by GROUP_NAME
+	</select>
+	
+
+	<!-- 일반계정유저추가 -->
+	<insert id="registerUser" parameterType="java.util.Map" >
+		insert ignore into 
+		TB_USER (USER_ID, USER_PW, USER_NAME, USER_MAIL, USER_MAIL_AUTHCODE, USER_PHONE, USER_COMPANY,
+				 GROUP_CODE, GROUP_NAME, AUTH_CODE, STATE_CODE, INS_USER, INS_DATE, UPD_USER, UPD_DATE)
+		VALUES (#{userId}, #{userPw}, #{userName}, #{userMail}, null, #{userPhone}, #{userCompany},
+				#{groupCode}, #{groupName}, 'USER', #{stateCode}, null, NOW(), null, NOW())		
+	</insert>
+	
+	<!-- 유저 수정삭제 페이지 이동 정보 -->
+	<select id="getUserInfo" parameterType="java.util.Map" resultType="java.util.Map">
+		select *
+		from TB_USER
+		where GROUP_NAME = #{groupName} and USER_NAME = #{userName}
+	</select>
+	
+	
+	<update id="updateUser"  parameterType="java.util.Map">
+		update TB_USER
+		set USER_NAME = #{userName},
+			USER_PW = #{userPw},
+			USER_MAIL = #{userMail},
+			USER_PHONE = #{userPhone},
+			USER_COMPANY = #{userCompany},
+			STATE_CODE = #{stateCode}
+		where USER_ID = #{userId}
+	</update>
+	
+	
+	<!-- 그룹 수정삭제 페이지 이동 정보 -->
+	<select id="getGroupInfo" parameterType="java.util.Map" resultType="java.util.Map">
+		select *
+		from TB_USER USER left join TB_PLAN PLAN
+		on USER.GROUP_NAME = PLAN.GROUP_NAME
+		where USER.GROUP_NAME = #{groupName} and USER.USER_NAME = #{userName}
+	</select>
+	
+	
+	<!-- 그룹 계정 update -->
+	<update id="updateGroupUser" parameterType="java.util.Map">
+		<![CDATA[
+		update TB_USER
+		set GROUP_NAME = #{groupName},
+			USER_COMPANY = #{groupName},
+			USER_NAME = #{userName},
+			USER_PW = #{userPw},
+			USER_MAIL = #{userMail},
+			USER_PHONE = #{userPhone},
+			STATE_CODE = #{stateCode}
+		where USER_ID = #{userId}
+		]]>
+	</update>
+	
+	<!-- 그룹 계정 RTK update  -->
+	<update id="updateGroupRtk" parameterType="java.util.Map">
+		UPDATE TB_PLAN
+		SET GROUP_NAME = #{groupName},
+			UPD_DATE = NOW(),
+			PLAN_ID = #{planId},
+			RTK_ID = #{rtkId},
+			RTK_PW = #{rtkPw}		
+		WHERE
+			GROUP_NAME = #{beforeGroupName}
+		AND 
+			PLAN_ID = #{beforePlanId}
+	</update>
+	
+	<!-- 그룹Table update -->
+	<update id="updateGroupTable" parameterType="java.util.Map">
+		<![CDATA[
+		update TB_GROUP
+		set GROUP_NAME = #{groupName}
+		where GROUP_CODE = #{groupCode}
+		]]>
+	</update>
+	
+	<!-- 해당그룹에 RTK계정이 있는지 확인-->
+	<select id="getCheckGroupRtk" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select count(*)
+		from TB_PLAN
+		where GROUP_NAME = #{beforeGroupName}
+		and PLAN_ID = #{beforePlanId}
+	</select>
+
+	
+	
+</mapper>

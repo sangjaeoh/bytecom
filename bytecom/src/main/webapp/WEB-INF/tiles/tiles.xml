@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+
+
+	<!-- 메뉴 표시 -->
+	<definition name="default" template="/WEB-INF/tiles/layout/default.jsp">
+		<put-attribute name="header" value="/WEB-INF/tiles/layout/header.jsp" />
+		<put-attribute name="left" value="/WEB-INF/tiles/layout/left.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/tiles/layout/footer.jsp" />
+	</definition>
+	
+	<definition name="*/*/*" extends="default">
+		<put-attribute name="content" value="/WEB-INF/views/{1}/{2}/{3}.jsp" />
+	</definition>
+	
+	<definition name="*/*" extends="default">
+		<put-attribute name="content" value="/WEB-INF/views/{1}/{2}.jsp" />
+	</definition>
+	
+	<definition name="*" extends="default">
+		<put-attribute name="content" value="/WEB-INF/views/{1}.jsp" />
+	</definition>
+	
+		
+	<!-- 메뉴 미표시 -->
+	<definition name="none" template="/WEB-INF/tiles/layout/none.jsp">
+		<put-attribute name="content" value="" />
+	</definition>
+	
+	<definition name="login" extends="none">
+		<put-attribute name="content" value="/WEB-INF/views/login.jsp" />
+	</definition>
+	<definition name="error/*" extends="none">
+		<put-attribute name="content" value="/WEB-INF/views/error/{1}.jsp" />
+	</definition>
+
+	
+</tiles-definitions>

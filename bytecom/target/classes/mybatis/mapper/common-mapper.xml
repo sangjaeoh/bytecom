@@ -1,0 +1,24 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.bytecom.dao.CommonDao">
+	
+	<!-- 그룹목록 전체 게시물 갯수 -->
+	<select id="getTotalGroupCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select count(*)		
+		from TB_USER USER left join TB_PLAN PLAN
+		on USER.GROUP_NAME = PLAN.GROUP_NAME
+		where USER.AUTH_CODE = 'GROUP'	
+	</select>
+	
+	<!-- 유저목록 전체 게시물 갯수 -->
+	<select id="getTotalUserCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select count(*)
+		from TB_USER
+		where AUTH_CODE = 'USER'
+		and GROUP_NAME = #{groupName} 	
+	</select>
+	
+	
+</mapper>

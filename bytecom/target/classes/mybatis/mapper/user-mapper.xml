@@ -1,0 +1,53 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.bytecom.user.dao.UserDao">
+	
+	<!-- 아이디 중복 체크 -->
+	<select id="userIdCheck" parameterType="String" resultType="java.lang.Integer">
+		select count(*) from TB_USER where USER_ID = #{userId}
+	</select>
+	
+	<!-- email 중복확인 -->
+	<select id="userMailCheck" parameterType="String" resultType="java.lang.Integer">
+		select count(*) from TB_USER where USER_MAIL = #{userMail}
+	</select>
+	
+	
+		
+	<!-- 회원등록 -->
+	<insert id="registerUser" parameterType="kr.co.bytecom.user.dto.UserDto">
+		insert ignore into 
+		TB_USER (USER_ID, USER_PW, USER_NAME, USER_MAIL, USER_MAIL_AUTHCODE, USER_PHONE, USER_COMPANY,
+				 GROUP_CODE, GROUP_NAME, AUTH_CODE, STATE_CODE, INS_USER, INS_DATE, UPD_USER, UPD_DATE)
+		VALUES (#{userId}, #{userPw}, #{userName}, #{userMail}, null, #{userPhone}, #{userCompany},
+				#{groupCode}, #{groupName}, 'USER', 'P', null, NOW(), null, NOW())		
+	</insert>
+	
+	
+		
+	
+	<!-- email 인증키 등록 -->
+	<update id="createAuthKey" parameterType="kr.co.bytecom.user.dto.UserDto">
+		update TB_USER set USER_MAIL_AUTHCODE = #{userMailAuthcode} where USER_ID = #{userId}
+	</update>
+	
+	<!-- email 인증키 확인 -->
+	<select id="chkAuth" parameterType="kr.co.bytecom.user.dto.UserDto" resultType="java.lang.Integer">
+		select count(*) from TB_USER where USER_MAIL = #{userMail} and USER_MAIL_AUTHCODE = #{userMailAuthcode} 
+	</select>
+	
+	<!-- email 인증완료 -->
+	<update id="userAuth" parameterType="kr.co.bytecom.user.dto.UserDto">
+		update TB_USER set STATE_CODE = 'A' where USER_MAIL = #{userMail}
+	</update>
+	
+	
+	
+	<!-- 로그인 -->
+	<select id="getUserData" parameterType="String" resultType="kr.co.bytecom.user.dto.UserDto">
+		select * from TB_USER where USER_ID = #{userId}
+	</select>
+	
+</mapper>
