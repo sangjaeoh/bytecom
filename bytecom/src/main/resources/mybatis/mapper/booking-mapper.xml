@@ -1,0 +1,46 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.bytecom.dao.BookingDao">
+	
+	
+	<select id="getAllPlanId" resultType="String">
+		SELECT PLAN_ID 
+		FROM TB_PLAN 
+		WHERE GROUP_CODE = #{groupCode}		
+	</select>	
+	
+	<select id="getBookingPlanIdList" parameterType="java.util.Map" resultType="java.util.Map">
+		
+		SELECT B.USER_ID as userId, P.PLAN_ID as planId, B.BOOK_START_DATE as startDate,
+		B.BOOK_END_DATE as endDate,
+		CASE
+		
+			<if test="startDate != null">
+			<![CDATA[
+			WHEN STR_TO_DATE(B.BOOK_END_DATE, '%Y-%m-%d') < #{startDate} THEN 'A'
+			WHEN STR_TO_DATE(B.BOOK_END_DATE, '%Y-%m-%d') >= #{startDate} THEN 'P'
+			]]>
+			</if>
+						
+			<if test="startDate == null">
+			<![CDATA[
+			WHEN STR_TO_DATE(B.BOOK_END_DATE, '%Y-%m-%d') < NOW() THEN 'A'
+			WHEN STR_TO_DATE(B.BOOK_END_DATE, '%Y-%m-%d') >= NOW() THEN 'P'
+			]]>
+			</if>
+						
+			WHEN B.BOOK_END_DATE IS NULL THEN 'A'
+			END AS state
+		FROM TB_PLAN P LEFT JOIN TB_BOOKING B
+		ON B.GROUP_CODE = P.GROUP_CODE
+		AND B.PLAN_ID = P.PLAN_ID
+		WHERE P.GROUP_CODE = #{groupCode} and B.BOOK_END_DATE is not null		
+		
+	</select>
+	
+
+	
+	
+</mapper>

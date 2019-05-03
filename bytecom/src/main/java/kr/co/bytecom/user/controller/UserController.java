@@ -2,14 +2,19 @@ package kr.co.bytecom.user.controller;
 
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -84,6 +89,47 @@ public class UserController {
     }
 		
     
+	//예약하기 페이지 이동
+	@RequestMapping( value = "/user/booking/add", method = RequestMethod.GET)
+    public String mvGroupBooking() {	
+		
+		return "/user/bookingadd";
+	}
+	
+	//예약하기 페이지 달력 PLAN_ID 데이터 생성
+	@RequestMapping( value = "/user/booking/getCalendar", method = RequestMethod.POST)
+    public @ResponseBody Map<String,Object> getCalendarData(@RequestBody Map<String,Object> map) {	
+		
+		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();			
+		Map<String,Object> returnMap = new HashMap<String, Object>();	
+		list = userService.getCalendarData(map);
+		returnMap.put("calendarData", list);
+		
+		return returnMap;
+	}
     
+	//유저 예약가능상품 알아오기
+	@RequestMapping( value = "/user/booking/getGoods", method = RequestMethod.GET)
+    public @ResponseBody List getGoods(@RequestParam Map<String,Object> map) {
+		
+		List<String> list = new ArrayList<String>();
+		list = userService.getGoods(map);
+		return list;
+	}
+    
+	//유저 상품예약 등록
+	@RequestMapping(value = "/user/booking/register", method = RequestMethod.POST, headers= {"Content-type=application/json"})
+    public @ResponseBody int registerBooking(@RequestBody Map<String,Object> map, HttpServletRequest request) {
+		//세션에서 로그인정보 구해와서 userid groupcode 
+		map.put("userId", "페페");
+		map.put("groupCode", "처음");
+		
+		int check = 0;
+		check = userService.registerBooking(map);		
+		return check;
+	}
+	
+	
+	
 
 }

@@ -50,4 +50,39 @@
 		select * from TB_USER where USER_ID = #{userId}
 	</select>
 	
+	
+	
+	
+	<!-- 유저 예약가능 상품명 알아오기 -->
+	<select id="getGoods" parameterType="java.util.Map" resultType="String">
+		select PLAN_ID
+		from TB_PLAN
+		where GROUP_CODE = #{groupCode}
+		and PLAN_ID 
+		not in (
+				  select PLAN_ID
+				  from TB_BOOKING
+				  where GROUP_CODE = #{groupCode}
+				  and BOOK_START_DATE in (${date})
+				  or BOOK_END_DATE in (${date})
+				  )
+	</select>
+	
+	<!-- 유저 상품예약 등록-->
+	<insert id="registerBooking" parameterType="java.util.Map">
+		insert ignore into
+			TB_BOOKING (USER_ID, BOOK_START_DATE, BOOK_END_DATE,
+						GROUP_CODE, PLAN_ID, INS_USER, INS_DATE, UPD_USER, UPD_DATE)
+			values(#{userId}, #{startDate}, #{endDate}, 
+					#{groupCode}, #{planId}, #{userId}, NOW(), NULL, NOW())		
+	</insert>
+	
+	<select id="">
+		select count(*)
+		from TB_BOOKING
+		where GROUP_CODE = #{groupCode}
+		and USER_ID = #{userId}
+		and BOOK_START_DATE between #{startDate} and #{endDate}
+	</select>
+	
 </mapper>

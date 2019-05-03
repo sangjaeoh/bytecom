@@ -2812,7 +2812,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var util_1 = __webpack_require__(4);
 exports.globalDefaults = {
     titleRangeSeparator: ' \u2013 ',
-    monthYearFormat: 'MMMM YYYY',
+    monthYearFormat: 'YYYY년 MMMM',
     defaultTimedEventDuration: '02:00:00',
     defaultAllDayEventDuration: { days: 1 },
     forceEventDuration: false,
@@ -2846,16 +2846,21 @@ exports.globalDefaults = {
     // locale
     locale: null,
     isRTL: false,
+    monthNames: ["1월","2월","3월","4월","5월","6월","7월","8월","9월","10월","11월","12월"],
+    monthNamesShort: ["1월","2월","3월","4월","5월","6월","7월","8월","9월","10월","11월","12월"],
+    dayNames: ["일요일","월요일","화요일","수요일","목요일","금요일","토요일"],
+    dayNamesShort: ["일","월","화","수","목","금","토"],
+    timeFormat : "HH:mm",    
     buttonText: {
         prev: 'prev',
         next: 'next',
         prevYear: 'prev year',
         nextYear: 'next year',
         year: 'year',
-        today: 'today',
-        month: 'month',
-        week: 'week',
-        day: 'day'
+        today: '오늘',
+        month: '월별',
+        week: '주별',
+        day: '일별'
     },
     // buttonIcons: null,
     allDayText: 'all-day',
@@ -2883,7 +2888,8 @@ exports.globalDefaults = {
     longPressDelay: 1000
 };
 exports.englishDefaults = {
-    dayPopoverFormat: 'dddd, MMMM D'
+    //dayPopoverFormat: 'dddd, MMMM D'
+	dayPopoverFormat: 'MMMM, dddd D'
 };
 exports.rtlDefaults = {
     header: {
@@ -15100,9 +15106,9 @@ ViewRegistry_1.defineView('list', {
     'class': ListView_1.default,
     buttonTextKey: 'list',
     defaults: {
-        buttonText: 'list',
+        buttonText: '년별',
         listDayFormat: 'LL',
-        noEventsMessage: 'No events to display'
+        noEventsMessage: '예약 내역이 없습니다.'
     }
 });
 ViewRegistry_1.defineView('listDay', {

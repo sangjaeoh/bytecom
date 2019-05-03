@@ -16,11 +16,19 @@ var KTCalendarBasic = function() {
                 header: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'month,agendaWeek,agendaDay,listWeek'
+                    //right: 'month,agendaWeek,agendaDay,listWeek,listYear'
+                    right: 'prevYear,nextYear'
                 },
                 editable: true,
-                eventLimit: true, // allow "more" link when too many events
+                //eventLimit: true, // allow "more" link when too many events
                 navLinks: true,
+                
+              
+                allDayDefault: false,
+                defaultView: "month",
+          
+                
+                	   
                 events: [
                     {
                         title: 'All Day Event',
@@ -39,7 +47,7 @@ var KTCalendarBasic = function() {
                         title: 'Company Trip',
                         start: YM + '-02',
                         description: 'Lorem ipsum dolor sit tempor incid',
-                        end: YM + '-03',
+                        end: YM + '-04',
                         className: "fc-event-primary"
                     },
                     {
